@@ -1,15 +1,78 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
 const stats = [
-  { value: "24H",  label: "即日対応" },
-  { value: "365",  label: "年中稼働" },
-  { value: "100%", label: "責任配送" },
+  { num: 24,  suffix: "H",  label: "即日対応" },
+  { num: 365, suffix: "",   label: "年中稼働" },
+  { num: 100, suffix: "%",  label: "責任配送" },
 ];
+
+function useCountUp(target: number, active: boolean, duration = 1600) {
+  const [count, setCount] = useState(0);
+  const rafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!active) return;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 4);
+      setCount(Math.round(eased * target));
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [active, target, duration]);
+
+  return count;
+}
+
+function StatCard({
+  num,
+  suffix,
+  label,
+  delay,
+  inView,
+}: {
+  num: number;
+  suffix: string;
+  label: string;
+  delay: number;
+  inView: boolean;
+}) {
+  const count = useCountUp(num, inView, 1600);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.55, delay, ease }}
+      whileHover={{
+        x: 6,
+        boxShadow:
+          "0 0 0 1px rgba(0,102,255,0.35), 4px 0 20px rgba(0,102,255,0.12)",
+        transition: { duration: 0.22 },
+      }}
+      className="flex-1 lg:flex-none border border-white/[0.07] bg-white/[0.018] p-6 flex items-center gap-5 cursor-default"
+    >
+      <span className="font-[family-name:var(--font-bebas)] text-4xl md:text-5xl text-blue-400 leading-none tracking-wider tabular-nums">
+        {count}
+        {suffix}
+      </span>
+      <span className="text-white/40 text-xs font-[family-name:var(--font-noto)] tracking-wide">
+        {label}
+      </span>
+    </motion.div>
+  );
+}
 
 export default function StatementSection() {
   const ref = useRef(null);
@@ -106,7 +169,7 @@ export default function StatementSection() {
             </motion.p>
           </div>
 
-          {/* ── Right: Stats ── */}
+          {/* ── Right: Stats with countup ── */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -114,25 +177,14 @@ export default function StatementSection() {
             className="flex flex-row lg:flex-col gap-4"
           >
             {stats.map((s, i) => (
-              <motion.div
-                key={s.value}
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.55, delay: 0.3 + i * 0.1, ease }}
-                whileHover={{
-                  x: 6,
-                  boxShadow: "0 0 0 1px rgba(0,102,255,0.35), 4px 0 20px rgba(0,102,255,0.12)",
-                  transition: { duration: 0.22 },
-                }}
-                className="flex-1 lg:flex-none border border-white/[0.07] bg-white/[0.018] p-6 flex items-center gap-5 cursor-default"
-              >
-                <span className="font-[family-name:var(--font-bebas)] text-4xl md:text-5xl text-blue-400 leading-none tracking-wider">
-                  {s.value}
-                </span>
-                <span className="text-white/40 text-xs font-[family-name:var(--font-noto)] tracking-wide">
-                  {s.label}
-                </span>
-              </motion.div>
+              <StatCard
+                key={s.label}
+                num={s.num}
+                suffix={s.suffix}
+                label={s.label}
+                delay={0.3 + i * 0.1}
+                inView={inView}
+              />
             ))}
           </motion.div>
         </div>

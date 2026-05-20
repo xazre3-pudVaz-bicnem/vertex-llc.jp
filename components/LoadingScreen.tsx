@@ -5,11 +5,44 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const LETTERS = "VERTEX".split("");
 const ease = [0.16, 1, 0.3, 1] as const;
+const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@!";
+const LABEL_TEXT = "LIGHT CARGO / LOGISTICS";
+
+function useScramble(text: string): string {
+  const [display, setDisplay] = useState(text);
+
+  useEffect(() => {
+    let iteration = 0;
+    const interval = setInterval(() => {
+      setDisplay(
+        text
+          .split("")
+          .map((char, i) => {
+            if (char === " " || char === "/" || char === ".") return char;
+            if (i < Math.floor(iteration)) return text[i];
+            return SCRAMBLE_CHARS[
+              Math.floor(Math.random() * SCRAMBLE_CHARS.length)
+            ];
+          })
+          .join("")
+      );
+      iteration += 0.45;
+      if (Math.floor(iteration) >= text.length) {
+        clearInterval(interval);
+        setDisplay(text);
+      }
+    }, 32);
+    return () => clearInterval(interval);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return display;
+}
 
 export default function LoadingScreen() {
   const [count, setCount] = useState(0);
   const [phase, setPhase] = useState<"counting" | "done" | "exit">("counting");
   const rafRef = useRef<number | null>(null);
+  const label = useScramble(LABEL_TEXT);
 
   useEffect(() => {
     const DURATION = 2100;
@@ -44,6 +77,9 @@ export default function LoadingScreen() {
           transition={{ duration: 0.75, ease }}
           className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden"
         >
+          {/* Film noise */}
+          <div className="noise-overlay" />
+
           {/* Grid overlay */}
           <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none" />
 
@@ -56,7 +92,7 @@ export default function LoadingScreen() {
           {/* Center content */}
           <div className="relative flex flex-col items-center">
 
-            {/* Small label */}
+            {/* Small label — scramble on mount */}
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -70,8 +106,8 @@ export default function LoadingScreen() {
                 style={{ transformOrigin: "right" }}
                 className="block w-6 h-px bg-blue-500/60"
               />
-              <span className="text-[9px] tracking-[0.5em] text-white/22 font-[family-name:var(--font-inter)] uppercase">
-                Light Cargo / Logistics
+              <span className="text-[9px] tracking-[0.5em] text-white/22 font-[family-name:var(--font-inter)]">
+                {label}
               </span>
               <motion.span
                 initial={{ scaleX: 0 }}
@@ -83,24 +119,42 @@ export default function LoadingScreen() {
             </motion.div>
 
             {/* VERTEX — letters slide up one by one */}
-            <h1 className="flex leading-none mb-10" aria-label="VERTEX">
-              {LETTERS.map((letter, i) => (
-                <div key={i} className="overflow-hidden">
-                  <motion.span
-                    initial={{ y: "110%" }}
-                    animate={{ y: 0 }}
-                    transition={{
-                      duration: 0.7,
-                      delay: 0.1 + i * 0.06,
-                      ease,
-                    }}
-                    className="inline-block font-[family-name:var(--font-bebas)] text-[clamp(4rem,14vw,10rem)] leading-[0.88] tracking-[0.05em] text-white"
-                  >
-                    {letter}
-                  </motion.span>
-                </div>
-              ))}
-            </h1>
+            <div className="relative mb-10">
+              <h1 className="flex leading-none" aria-label="VERTEX">
+                {LETTERS.map((letter, i) => (
+                  <div key={i} className="overflow-hidden">
+                    <motion.span
+                      initial={{ y: "110%" }}
+                      animate={{ y: 0 }}
+                      transition={{
+                        duration: 0.7,
+                        delay: 0.1 + i * 0.06,
+                        ease,
+                      }}
+                      className="inline-block font-[family-name:var(--font-bebas)] text-[clamp(4rem,14vw,10rem)] leading-[0.88] tracking-[0.05em] text-white"
+                    >
+                      {letter}
+                    </motion.span>
+                  </div>
+                ))}
+              </h1>
+
+              {/* Glitch overlay — positioned over the h1 */}
+              <div
+                className="glitch-wrap absolute inset-0 pointer-events-none overflow-hidden"
+                data-text="VERTEX"
+                aria-hidden="true"
+                style={{
+                  fontFamily: "var(--font-bebas)",
+                  fontSize: "clamp(4rem,14vw,10rem)",
+                  letterSpacing: "0.05em",
+                  lineHeight: "0.88",
+                  color: "transparent",
+                }}
+              >
+                VERTEX
+              </div>
+            </div>
 
             {/* Progress area */}
             <motion.div
