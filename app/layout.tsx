@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bebas_Neue, Noto_Sans_JP, Inter } from "next/font/google";
 import "./globals.css";
 import LenisProvider from "@/components/LenisProvider";
+import LoadingScreen from "@/components/LoadingScreen";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
@@ -52,6 +53,7 @@ export default function RootLayout({
     >
       <body>
         <LenisProvider>
+          <LoadingScreen />
           <Navigation />
           {children}
           <Footer />

@@ -13,6 +13,8 @@ export default function Home() {
       <MarqueeSection />
       <StatementSection />
       <ServiceSection />
+      {/* Brand keywords — large faint type between sections */}
+      <MarqueeSection variant="brand" reverse />
       <StrengthSection />
       <MarqueeSection variant="light" />
       <RecruitSection />
