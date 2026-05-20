@@ -1,13 +1,13 @@
-/* ─────────────────────────────────────────────────────────────
+/* -----------------------------------------------------------------
    WordPress REST API client
-   Base URL is read from WORDPRESS_API_URL env var (server-only).
-   ───────────────────────────────────────────────────────────── */
+   Use || (not ??) so an empty-string env var also falls back.
+   ----------------------------------------------------------------- */
 
-const BASE =
-  process.env.WORDPRESS_API_URL ??
-  "https://wp.vertex-llc.jp/wp-json/wp/v2";
+const BASE = (
+  process.env.WORDPRESS_API_URL || "https://wp.vertex-llc.jp/wp-json/wp/v2"
+).replace(/\/$/, "");
 
-/* ── Types ────────────────────────────────────────────────── */
+/* -- Types ------------------------------------------------------- */
 
 export interface WPMedia {
   source_url: string;
@@ -62,97 +62,99 @@ export interface PostsResult {
   totalPages: number;
 }
 
-/* ── Fetch helpers ────────────────────────────────────────── */
-
-async function apiFetch<T>(
-  path: string,
-  params: Record<string, string | number | boolean> = {},
-  revalidate = 60
-): Promise<{ data: T; headers: Headers } | null> {
-  const url = new URL(`${BASE}${path}`);
-  for (const [k, v] of Object.entries(params)) {
-    url.searchParams.set(k, String(v));
-  }
-
-  try {
-    const res = await fetch(url.toString(), {
-      next: { revalidate },
-      headers: { Accept: "application/json" },
-    });
-
-    if (!res.ok) {
-      console.error(`[WP] ${res.status} ${res.statusText} — ${url}`);
-      return null;
-    }
-
-    const data: T = await res.json();
-    return { data, headers: res.headers };
-  } catch (err) {
-    console.error(`[WP] fetch failed — ${url}`, err);
-    return null;
-  }
-}
-
-/* ── Posts ────────────────────────────────────────────────── */
+/* -- Posts ------------------------------------------------------- */
 
 export async function fetchPosts(opts: {
   page?: number;
   perPage?: number;
   categoryId?: number;
-  search?: string;
 } = {}): Promise<PostsResult> {
-  const { page = 1, perPage = 9, categoryId, search } = opts;
+  const { page = 1, perPage = 12, categoryId } = opts;
 
-  const params: Record<string, string | number | boolean> = {
-    page,
-    per_page: perPage,
-    _embed: 1,
-    orderby: "date",
-    order: "desc",
-  };
-  if (categoryId) params.categories = categoryId;
-  if (search) params.search = search;
+  const url = new URL(`${BASE}/posts`);
+  url.searchParams.set("_embed", "");
+  url.searchParams.set("per_page", String(perPage));
+  url.searchParams.set("page", String(page));
+  url.searchParams.set("orderby", "date");
+  url.searchParams.set("order", "desc");
+  if (categoryId) url.searchParams.set("categories", String(categoryId));
 
-  const result = await apiFetch<WPPost[]>("/posts", params);
-  if (!result) return { posts: [], total: 0, totalPages: 0 };
+  console.log("[WP] fetchPosts ->", url.toString());
 
-  const total = parseInt(result.headers.get("X-WP-Total") ?? "0", 10);
-  const totalPages = parseInt(result.headers.get("X-WP-TotalPages") ?? "0", 10);
+  try {
+    const res = await fetch(url.toString(), { next: { revalidate: 60 } });
 
-  return { posts: result.data, total, totalPages };
+    if (!res.ok) {
+      console.error(`[WP] fetchPosts ${res.status} ${res.statusText} -- ${url}`);
+      return { posts: [], total: 0, totalPages: 0 };
+    }
+
+    const posts: WPPost[] = await res.json();
+    const total = parseInt(res.headers.get("X-WP-Total") ?? String(posts.length), 10);
+    const totalPages = parseInt(res.headers.get("X-WP-TotalPages") ?? "1", 10);
+
+    console.log(`[WP] fetchPosts <- ${posts.length} posts (total=${total}, pages=${totalPages})`);
+    return { posts, total, totalPages };
+  } catch (err) {
+    console.error("[WP] fetchPosts error:", err);
+    return { posts: [], total: 0, totalPages: 0 };
+  }
 }
 
 export async function fetchPostBySlug(slug: string): Promise<WPPost | null> {
-  const result = await apiFetch<WPPost[]>("/posts", {
-    slug,
-    _embed: 1,
-  });
-  return result?.data[0] ?? null;
+  const url = new URL(`${BASE}/posts`);
+  url.searchParams.set("slug", slug);
+  url.searchParams.set("_embed", "");
+
+  try {
+    const res = await fetch(url.toString(), { next: { revalidate: 60 } });
+    if (!res.ok) {
+      console.error(`[WP] fetchPostBySlug ${res.status} -- ${url}`);
+      return null;
+    }
+    const posts: WPPost[] = await res.json();
+    return posts[0] ?? null;
+  } catch (err) {
+    console.error("[WP] fetchPostBySlug error:", err);
+    return null;
+  }
 }
 
 export async function fetchAllPostSlugs(): Promise<string[]> {
-  const result = await apiFetch<Array<{ slug: string }>>(
-    "/posts",
-    { per_page: 100, _fields: "slug" },
-    3600
-  );
-  return result?.data.map((p) => p.slug) ?? [];
+  const url = new URL(`${BASE}/posts`);
+  url.searchParams.set("per_page", "100");
+  url.searchParams.set("_fields", "slug");
+
+  try {
+    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
+    if (!res.ok) return [];
+    const posts: Array<{ slug: string }> = await res.json();
+    return posts.map((p) => p.slug);
+  } catch {
+    return [];
+  }
 }
 
-/* ── Categories ───────────────────────────────────────────── */
+/* -- Categories ------------------------------------------------- */
 
 export async function fetchCategories(): Promise<WPCategory[]> {
-  const result = await apiFetch<WPCategory[]>(
-    "/categories",
-    { per_page: 20, hide_empty: true, orderby: "count", order: "desc" },
-    3600
-  );
-  return result?.data ?? [];
+  const url = new URL(`${BASE}/categories`);
+  url.searchParams.set("per_page", "20");
+  url.searchParams.set("hide_empty", "false");
+  url.searchParams.set("orderby", "count");
+  url.searchParams.set("order", "desc");
+
+  try {
+    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
 }
 
-/* ── Helpers ──────────────────────────────────────────────── */
+/* -- Helpers ---------------------------------------------------- */
 
-/** Returns the best available featured image URL for a post */
 export function getPostImage(post: WPPost): string | null {
   const media = post._embedded?.["wp:featuredmedia"]?.[0];
   if (!media) return null;
@@ -165,7 +167,6 @@ export function getPostImage(post: WPPost): string | null {
   );
 }
 
-/** Returns the alt text for a post's featured image */
 export function getPostImageAlt(post: WPPost): string {
   return (
     post._embedded?.["wp:featuredmedia"]?.[0]?.alt_text ||
@@ -173,12 +174,10 @@ export function getPostImageAlt(post: WPPost): string {
   );
 }
 
-/** Returns category names for a post (first term array = categories) */
 export function getPostCategoryNames(post: WPPost): string[] {
   return post._embedded?.["wp:term"]?.[0]?.map((t) => t.name) ?? [];
 }
 
-/** Formats a WP date string to Japanese locale */
 export function formatDate(dateString: string): string {
   try {
     return new Date(dateString).toLocaleDateString("ja-JP", {
@@ -191,12 +190,10 @@ export function formatDate(dateString: string): string {
   }
 }
 
-/** Strips HTML tags and decodes basic entities */
 export function stripHtml(html: string): string {
   return decodeEntities(html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim());
 }
 
-/** Decodes common HTML entities */
 function decodeEntities(str: string): string {
   return str
     .replace(/&amp;/g, "&")
@@ -206,9 +203,9 @@ function decodeEntities(str: string): string {
     .replace(/&#039;/g, "'")
     .replace(/&#8211;/g, "–")
     .replace(/&#8212;/g, "—")
-    .replace(/&#8216;/g, "‘")
-    .replace(/&#8217;/g, "’")
-    .replace(/&#8220;/g, "“")
-    .replace(/&#8221;/g, "”")
+    .replace(/&#8216;/g, "\u2018")
+    .replace(/&#8217;/g, "\u2019")
+    .replace(/&#8220;/g, "\u201C")
+    .replace(/&#8221;/g, "\u201D")
     .replace(/&nbsp;/g, " ");
 }

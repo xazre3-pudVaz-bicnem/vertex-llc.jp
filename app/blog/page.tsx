@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 /* Revalidate every 60 seconds (ISR) */
 export const revalidate = 60;
 
-const PER_PAGE = 9;
+const PER_PAGE = 12;
 
 interface SearchParams {
   page?: string;
