@@ -5,6 +5,8 @@ import LenisProvider from "@/components/LenisProvider";
 import LoadingScreen from "@/components/LoadingScreen";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import CustomCursor from "@/components/CustomCursor";
+import PageProgress from "@/components/PageProgress";
 
 const bebasNeue = Bebas_Neue({
   weight: "400",
@@ -53,6 +55,8 @@ export default function RootLayout({
     >
       <body>
         <LenisProvider>
+          <CustomCursor />
+          <PageProgress />
           <LoadingScreen />
           <Navigation />
           {children}

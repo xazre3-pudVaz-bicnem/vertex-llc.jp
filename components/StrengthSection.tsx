@@ -3,6 +3,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { ease } from "@/utils/motion";
+import SplitReveal from "@/components/SplitReveal";
 
 const strengths = [
   {
@@ -54,7 +55,6 @@ export default function StrengthSection() {
         className="absolute top-1/2 right-0 w-[450px] h-[450px] rounded-full blur-[90px] pointer-events-none"
         style={{ background: "rgba(0,80,255,0.05)" }}
       />
-      {/* Left accent line */}
       <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-blue-500/10 to-transparent" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
@@ -78,15 +78,14 @@ export default function StrengthSection() {
             </span>
           </motion.div>
 
-          <div className="overflow-hidden mb-20">
-            <motion.h2
-              initial={{ y: "110%" }}
-              animate={headingInView ? { y: 0 } : {}}
-              transition={{ duration: 0.85, delay: 0.1, ease }}
+          {/* GSAP SplitReveal for the main heading */}
+          <div className="mb-20">
+            <SplitReveal
+              text="OUR STRENGTH"
               className="font-[family-name:var(--font-bebas)] text-[clamp(3rem,8vw,7rem)] leading-[0.9] text-white"
-            >
-              OUR STRENGTH
-            </motion.h2>
+              stagger={0.08}
+              start="top 90%"
+            />
           </div>
         </div>
 
@@ -95,16 +94,25 @@ export default function StrengthSection() {
           {strengths.map((item, i) => (
             <motion.div
               key={item.number}
-              initial={{ opacity: 0, x: -40 }}
-              animate={listInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.65, delay: i * 0.13, ease }}
+              initial={{ opacity: 0, clipPath: "inset(0 100% 0 0)" }}
+              animate={
+                listInView
+                  ? { opacity: 1, clipPath: "inset(0 0% 0 0)" }
+                  : {}
+              }
+              transition={{ duration: 0.75, delay: i * 0.12, ease }}
               className="group border-t border-white/[0.06] last:border-b hover:bg-white/[0.018] transition-colors duration-300 cursor-default"
             >
               <div className="py-8 md:py-10 grid grid-cols-[56px_1fr] md:grid-cols-[110px_1fr_1fr] gap-6 md:gap-10 items-start md:items-center">
                 {/* Number */}
                 <motion.span
                   animate={{ opacity: [0.05, 0.12, 0.05] }}
-                  transition={{ duration: 4, delay: i * 0.5, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{
+                    duration: 4,
+                    delay: i * 0.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                   className="font-[family-name:var(--font-bebas)] text-5xl md:text-7xl leading-none group-hover:text-blue-500/20 transition-colors duration-500 select-none"
                   style={{ color: "rgba(255,255,255,0.05)" }}
                 >
@@ -127,11 +135,11 @@ export default function StrengthSection() {
                 </p>
               </div>
 
-              {/* Progress bar */}
+              {/* Progress bar — clip-path reveal */}
               <motion.div
                 initial={{ scaleX: 0 }}
                 animate={listInView ? { scaleX: 1 } : {}}
-                transition={{ duration: 1, delay: i * 0.13 + 0.35, ease }}
+                transition={{ duration: 1.1, delay: i * 0.12 + 0.4, ease }}
                 style={{ transformOrigin: "left" }}
                 className="h-px bg-gradient-to-r from-blue-500/30 to-transparent"
               />

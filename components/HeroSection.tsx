@@ -14,6 +14,38 @@ import HeroParticles from "@/components/HeroParticles";
 const LETTERS = "VERTEX".split("");
 const ease = [0.16, 1, 0.3, 1] as const;
 
+const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./";
+const SUBTITLE_TEXT = "DELIVERING TRUST.   MOVING THE FUTURE.";
+
+function useScramble(text: string, active: boolean): string {
+  const [display, setDisplay] = useState(text);
+  useEffect(() => {
+    if (!active) return;
+    let iter = 0;
+    const id = setInterval(() => {
+      setDisplay(
+        text
+          .split("")
+          .map((ch, i) => {
+            if (ch === " ") return " ";
+            if (i < Math.floor(iter)) return text[i];
+            return SCRAMBLE_CHARS[
+              Math.floor(Math.random() * SCRAMBLE_CHARS.length)
+            ];
+          })
+          .join("")
+      );
+      iter += 0.55;
+      if (Math.floor(iter) >= text.length) {
+        clearInterval(id);
+        setDisplay(text);
+      }
+    }, 28);
+    return () => clearInterval(id);
+  }, [active, text]);
+  return display;
+}
+
 /* Letters alternating solid / outline */
 const OUTLINE_IDX = new Set([1, 3]); // E, T are outline
 
@@ -36,6 +68,7 @@ const STREAKS = [
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [revealed, setRevealed] = useState(false);
+  const subtitle = useScramble(SUBTITLE_TEXT, revealed);
 
   useEffect(() => {
     const t = setTimeout(() => setRevealed(true), 1600);
@@ -236,7 +269,7 @@ export default function HeroSection() {
           className="depth-line my-6 max-w-3xl"
         />
 
-        {/* EN sub-copy */}
+        {/* EN sub-copy — scramble reveal */}
         <div className="overflow-hidden mb-8">
           <motion.p
             initial={{ y: "110%" }}
@@ -244,7 +277,7 @@ export default function HeroSection() {
             transition={{ duration: 0.85, delay: 1.0, ease }}
             className="font-[family-name:var(--font-bebas)] text-[clamp(0.85rem,2.2vw,1.9rem)] tracking-[0.22em] text-white/20"
           >
-            DELIVERING TRUST.&nbsp;&nbsp;&nbsp;MOVING THE FUTURE.
+            {subtitle}
           </motion.p>
         </div>
 
