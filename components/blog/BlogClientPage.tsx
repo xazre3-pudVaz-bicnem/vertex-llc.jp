@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import PageHero from "@/components/PageHero";
 import BlogList from "@/components/blog/BlogList";
@@ -24,44 +24,74 @@ export default function BlogClientPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const loadPosts = useCallback(async () => {
-    setLoading(true);
-    setError(false);
-
-    let postsUrl = `${WP_BASE}/posts?_embed&per_page=12&page=${currentPage}&orderby=date&order=desc`;
-    if (categoryId) postsUrl += `&categories=${categoryId}`;
-
-    const catsUrl = `${WP_BASE}/categories?per_page=20&hide_empty=false&orderby=count&order=desc`;
-
-    try {
-      const [postsRes, catsRes] = await Promise.all([
-        fetch(postsUrl),
-        fetch(catsUrl),
-      ]);
-
-      if (!postsRes.ok) throw new Error(`HTTP ${postsRes.status}`);
-
-      const postsData: WPPost[] = await postsRes.json();
-      const t = parseInt(postsRes.headers.get("X-WP-Total") ?? String(postsData.length), 10);
-      const tp = parseInt(postsRes.headers.get("X-WP-TotalPages") ?? "1", 10);
-
-      const catsData: WPCategory[] = catsRes.ok ? await catsRes.json() : [];
-
-      setPosts(postsData);
-      setTotal(t);
-      setTotalPages(tp);
-      setCategories(catsData);
-    } catch (err) {
-      console.error("[WP] client fetch error:", err);
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage, categoryId]);
-
   useEffect(() => {
-    loadPosts();
-  }, [loadPosts]);
+    let mounted = true;
+
+    async function load() {
+      if (mounted) {
+        setLoading(true);
+        setError(false);
+      }
+
+      // 15秒でタイムアウト — これで fetch が hung しても必ず finally に到達する
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 15000);
+
+      let postsUrl = `${WP_BASE}/posts?_embed&per_page=12&page=${currentPage}&orderby=date&order=desc`;
+      if (categoryId) postsUrl += `&categories=${categoryId}`;
+      const catsUrl = `${WP_BASE}/categories?per_page=20&hide_empty=false&orderby=count&order=desc`;
+
+      try {
+        // allSettled: categories が失敗しても posts を表示できる
+        const [postsSettled, catsSettled] = await Promise.allSettled([
+          fetch(postsUrl, { signal: controller.signal }),
+          fetch(catsUrl, { signal: controller.signal }),
+        ]);
+
+        if (!mounted) return;
+
+        // posts は必須
+        if (postsSettled.status === "rejected") {
+          throw new Error(String(postsSettled.reason));
+        }
+        const postsRes = postsSettled.value;
+        if (!postsRes.ok) throw new Error(`HTTP ${postsRes.status}`);
+
+        const postsData: WPPost[] = await postsRes.json();
+        const t = parseInt(postsRes.headers.get("X-WP-Total") ?? String(postsData.length), 10);
+        const tp = parseInt(postsRes.headers.get("X-WP-TotalPages") ?? "1", 10);
+
+        // categories は任意 — 失敗しても無視
+        let catsData: WPCategory[] = [];
+        if (catsSettled.status === "fulfilled" && catsSettled.value.ok) {
+          try {
+            catsData = await catsSettled.value.json();
+          } catch {
+            // ignore
+          }
+        }
+
+        if (mounted) {
+          setPosts(postsData);
+          setTotal(t);
+          setTotalPages(tp);
+          setCategories(catsData);
+        }
+      } catch (err) {
+        console.error("[WP] blog fetch error:", err);
+        if (mounted) setError(true);
+      } finally {
+        clearTimeout(timer);
+        if (mounted) setLoading(false);
+      }
+    }
+
+    load();
+
+    return () => {
+      mounted = false;
+    };
+  }, [currentPage, categoryId]);
 
   return (
     <main>
@@ -109,12 +139,6 @@ export default function BlogClientPage() {
               <p className="text-white/30 text-sm font-[family-name:var(--font-noto)]">
                 記事を取得できませんでした。
               </p>
-              <button
-                onClick={loadPosts}
-                className="mt-6 text-[10px] tracking-[0.22em] font-[family-name:var(--font-inter)] text-blue-400/70 hover:text-blue-300 transition-colors"
-              >
-                再試行
-              </button>
             </div>
           )}
 
