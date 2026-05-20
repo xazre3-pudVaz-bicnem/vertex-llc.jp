@@ -72,15 +72,11 @@ export default async function BlogPage({
             categoryId={categoryId}
           />
 
-          {/* API status note (only in dev / when empty) */}
+          {/* Empty state */}
           {posts.length === 0 && (
             <div className="mt-8 border border-white/[0.05] bg-white/[0.01] p-6 max-w-lg">
               <p className="text-white/22 text-xs font-[family-name:var(--font-noto)] leading-[1.9]">
-                WordPress APIへの接続を確認中です。
-                <code className="text-blue-400/60 text-[10px] ml-1 font-mono">
-                  WORDPRESS_API_URL
-                </code>
-                の設定と、WordPressサイトが公開されているか確認してください。
+                記事を読み込めませんでした。しばらくしてから再度お試しください。
               </p>
             </div>
           )}

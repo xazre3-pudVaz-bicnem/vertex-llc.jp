@@ -1,11 +1,8 @@
-/* -----------------------------------------------------------------
-   WordPress REST API client
-   Use || (not ??) so an empty-string env var also falls back.
+﻿/* -----------------------------------------------------------------
+   WordPress REST API client  -  URL is hardcoded, no env vars.
    ----------------------------------------------------------------- */
 
-const BASE = (
-  process.env.WORDPRESS_API_URL || "https://wp.vertex-llc.jp/wp-json/wp/v2"
-).replace(/\/$/, "");
+const WP_BASE = "https://wp.vertex-llc.jp/wp-json/wp/v2";
 
 /* -- Types ------------------------------------------------------- */
 
@@ -71,21 +68,23 @@ export async function fetchPosts(opts: {
 } = {}): Promise<PostsResult> {
   const { page = 1, perPage = 12, categoryId } = opts;
 
-  const url = new URL(`${BASE}/posts`);
-  url.searchParams.set("_embed", "");
-  url.searchParams.set("per_page", String(perPage));
-  url.searchParams.set("page", String(page));
-  url.searchParams.set("orderby", "date");
-  url.searchParams.set("order", "desc");
-  if (categoryId) url.searchParams.set("categories", String(categoryId));
+  // Build URL exactly as: .../posts?_embed&per_page=12[&page=N][&categories=N]
+  let qs = `_embed&per_page=${perPage}&page=${page}&orderby=date&order=desc`;
+  if (categoryId) qs += `&categories=${categoryId}`;
 
-  console.log("[WP] fetchPosts ->", url.toString());
+  const url = `${WP_BASE}/posts?${qs}`;
+  console.log("[WP] fetchPosts ->", url);
 
   try {
-    const res = await fetch(url.toString(), { next: { revalidate: 60 } });
+    const res = await fetch(url, {
+      next: { revalidate: 60 },
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; NextJS)" },
+    });
+
+    console.log("[WP] fetchPosts status:", res.status);
 
     if (!res.ok) {
-      console.error(`[WP] fetchPosts ${res.status} ${res.statusText} -- ${url}`);
+      console.error("[WP] fetchPosts failed:", res.status, res.statusText);
       return { posts: [], total: 0, totalPages: 0 };
     }
 
@@ -102,14 +101,16 @@ export async function fetchPosts(opts: {
 }
 
 export async function fetchPostBySlug(slug: string): Promise<WPPost | null> {
-  const url = new URL(`${BASE}/posts`);
-  url.searchParams.set("slug", slug);
-  url.searchParams.set("_embed", "");
+  const url = `${WP_BASE}/posts?slug=${encodeURIComponent(slug)}&_embed`;
+  console.log("[WP] fetchPostBySlug ->", url);
 
   try {
-    const res = await fetch(url.toString(), { next: { revalidate: 60 } });
+    const res = await fetch(url, {
+      next: { revalidate: 60 },
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; NextJS)" },
+    });
     if (!res.ok) {
-      console.error(`[WP] fetchPostBySlug ${res.status} -- ${url}`);
+      console.error("[WP] fetchPostBySlug failed:", res.status);
       return null;
     }
     const posts: WPPost[] = await res.json();
@@ -121,12 +122,13 @@ export async function fetchPostBySlug(slug: string): Promise<WPPost | null> {
 }
 
 export async function fetchAllPostSlugs(): Promise<string[]> {
-  const url = new URL(`${BASE}/posts`);
-  url.searchParams.set("per_page", "100");
-  url.searchParams.set("_fields", "slug");
+  const url = `${WP_BASE}/posts?per_page=100&_fields=slug`;
 
   try {
-    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
+    const res = await fetch(url, {
+      next: { revalidate: 3600 },
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; NextJS)" },
+    });
     if (!res.ok) return [];
     const posts: Array<{ slug: string }> = await res.json();
     return posts.map((p) => p.slug);
@@ -138,16 +140,16 @@ export async function fetchAllPostSlugs(): Promise<string[]> {
 /* -- Categories ------------------------------------------------- */
 
 export async function fetchCategories(): Promise<WPCategory[]> {
-  const url = new URL(`${BASE}/categories`);
-  url.searchParams.set("per_page", "20");
-  url.searchParams.set("hide_empty", "false");
-  url.searchParams.set("orderby", "count");
-  url.searchParams.set("order", "desc");
+  const url = `${WP_BASE}/categories?per_page=20&hide_empty=false&orderby=count&order=desc`;
 
   try {
-    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
+    const res = await fetch(url, {
+      next: { revalidate: 3600 },
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; NextJS)" },
+    });
     if (!res.ok) return [];
-    return res.json();
+    const data: WPCategory[] = await res.json();
+    return data;
   } catch {
     return [];
   }
@@ -201,11 +203,11 @@ function decodeEntities(str: string): string {
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#039;/g, "'")
-    .replace(/&#8211;/g, "–")
-    .replace(/&#8212;/g, "—")
-    .replace(/&#8216;/g, "\u2018")
-    .replace(/&#8217;/g, "\u2019")
-    .replace(/&#8220;/g, "\u201C")
-    .replace(/&#8221;/g, "\u201D")
+    .replace(/&#8211;/g, "-")
+    .replace(/&#8212;/g, "--")
+    .replace(/&#8216;/g, "'")
+    .replace(/&#8217;/g, "'")
+    .replace(/&#8220;/g, '"')
+    .replace(/&#8221;/g, '"')
     .replace(/&nbsp;/g, " ");
 }
