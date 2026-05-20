@@ -1,38 +1,41 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import BlogList from "@/components/blog/BlogList";
+import BlogCategoryFilter from "@/components/blog/BlogCategoryFilter";
+import BlogPagination from "@/components/blog/BlogPagination";
+import { fetchPosts, fetchCategories } from "@/lib/wordpress";
 
 export const metadata: Metadata = {
   title: "ブログ",
   description: "合同会社VERTEXのブログ。軽貨物配送に関する情報・ニュースをお届けします。",
 };
 
-/* WordPress REST API ready — replace with actual fetch when available */
-const placeholderPosts = [
-  {
-    slug: "welcome-post",
-    title: "合同会社VERTEXのホームページを公開しました",
-    excerpt: "この度、合同会社VERTEXのコーポレートサイトをオープンしました。軽貨物配送を中心にサービス展開していきます。",
-    date: "2024-01-01",
-    category: "お知らせ",
-  },
-  {
-    slug: "service-info",
-    title: "スポット配送・チャーター便のご案内",
-    excerpt: "急な配送ご依頼にも対応するスポット便と、専用便として柔軟にご対応するチャーター便についてご説明します。",
-    date: "2024-01-05",
-    category: "サービス",
-  },
-  {
-    slug: "recruit-info",
-    title: "軽貨物ドライバー募集中！未経験歓迎",
-    excerpt: "現在、軽貨物ドライバーを積極的に募集しています。未経験者も歓迎。業務委託契約で自由度の高い働き方が可能です。",
-    date: "2024-01-10",
-    category: "採用",
-  },
-];
+/* Revalidate every 60 seconds (ISR) */
+export const revalidate = 60;
 
-export default function BlogPage() {
+const PER_PAGE = 9;
+
+interface SearchParams {
+  page?: string;
+  category?: string;
+}
+
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const { page: pageParam, category } = await searchParams;
+
+  const currentPage   = Math.max(1, parseInt(pageParam ?? "1", 10));
+  const categoryId    = category ? parseInt(category, 10) : undefined;
+
+  /* Parallel fetch posts + categories */
+  const [{ posts, total, totalPages }, categories] = await Promise.all([
+    fetchPosts({ page: currentPage, perPage: PER_PAGE, categoryId }),
+    fetchCategories(),
+  ]);
+
   return (
     <main>
       <PageHero
@@ -41,7 +44,48 @@ export default function BlogPage() {
         subheading="ブログ・お知らせ"
         breadcrumb={[{ label: "BLOG", href: "/blog" }]}
       />
-      <BlogList posts={placeholderPosts} />
+
+      <section className="relative py-16 md:py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-[#020204]" />
+        <div className="absolute inset-0 grid-bg opacity-35" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-white/[0.05]" />
+
+        <div className="relative z-10 max-w-[1440px] mx-auto px-8 md:px-16">
+          {/* Category filter + post count */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+            <BlogCategoryFilter
+              categories={categories}
+              activeCategoryId={categoryId}
+            />
+            <p className="text-white/20 text-[10px] font-[family-name:var(--font-inter)] tracking-[0.2em] shrink-0">
+              {total} POSTS
+            </p>
+          </div>
+
+          {/* Posts grid */}
+          <BlogList posts={posts} />
+
+          {/* Pagination */}
+          <BlogPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            categoryId={categoryId}
+          />
+
+          {/* API status note (only in dev / when empty) */}
+          {posts.length === 0 && (
+            <div className="mt-8 border border-white/[0.05] bg-white/[0.01] p-6 max-w-lg">
+              <p className="text-white/22 text-xs font-[family-name:var(--font-noto)] leading-[1.9]">
+                WordPress APIへの接続を確認中です。
+                <code className="text-blue-400/60 text-[10px] ml-1 font-mono">
+                  WORDPRESS_API_URL
+                </code>
+                の設定と、WordPressサイトが公開されているか確認してください。
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
     </main>
   );
 }
