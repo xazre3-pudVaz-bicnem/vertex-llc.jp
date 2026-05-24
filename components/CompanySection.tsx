@@ -75,7 +75,7 @@ export default function CompanySection() {
             {/* Logo */}
             <div className="relative w-28 h-28 mb-2">
               <Image
-                src="/logo.png"
+                src="/logo.jpg"
                 alt="合同会社VERTEX ロゴ"
                 fill
                 className="object-contain"

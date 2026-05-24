@@ -183,7 +183,7 @@ export default function AboutContent() {
               {/* Logo */}
               <div className="relative w-24 h-24">
                 <Image
-                  src="/logo.png"
+                  src="/logo.jpg"
                   alt="合同会社VERTEX ロゴ"
                   fill
                   className="object-contain"
