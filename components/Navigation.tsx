@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const navItems = [
@@ -45,10 +46,20 @@ export default function Navigation() {
         {/* Logo */}
         <Link
           href="/"
-          className="font-[family-name:var(--font-bebas)] text-2xl tracking-[0.2em] text-white hover:text-blue-400 transition-colors duration-300 relative group"
+          className="flex items-center gap-2.5 group relative"
         >
-          VERTEX
-          <span className="absolute -bottom-0.5 left-0 w-0 group-hover:w-full h-px bg-blue-500 transition-all duration-400" />
+          <Image
+            src="/logo.jpg"
+            alt="VERTEX"
+            width={120}
+            height={120}
+            className="w-8 h-8 md:w-9 md:h-9 object-contain flex-shrink-0"
+            priority
+          />
+          <span className="relative font-[family-name:var(--font-bebas)] text-2xl tracking-[0.2em] text-white group-hover:text-blue-400 transition-colors duration-300">
+            VERTEX
+            <span className="absolute -bottom-0.5 left-0 w-0 group-hover:w-full h-px bg-blue-500 transition-all duration-300" />
+          </span>
         </Link>
 
         {/* Desktop nav */}

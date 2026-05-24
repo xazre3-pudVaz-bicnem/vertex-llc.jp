@@ -10,8 +10,6 @@ const jobData = [
     value: "軽貨物配送、企業配送、スポット配送など",
   },
   { label: "応募資格", value: "普通自動車免許（AT限定可）" },
-  { label: "勤務地", value: "あとで入力" },
-  { label: "報酬", value: "あとで入力" },
   { label: "勤務時間", value: "案件により異なる" },
   { label: "休日", value: "案件により異なる" },
 ];
