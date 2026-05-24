@@ -8,35 +8,34 @@ import GlowButton from "@/components/ui/GlowButton";
 const channels = [
   {
     label: "Instagram",
-    handle: "あとで入力",
-    href: "https://instagram.com/",
+    handle: "@vertex.logi.official",
+    href: "https://www.instagram.com/vertex.logi.official?igsh=MTJ5YmdnenY3cjZ1ZQ%3D%3D&utm_source=qr",
     icon: (
       <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none">
-        <rect x="2" y="2" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="1.4"/>
-        <circle cx="10" cy="10" r="3.5" stroke="currentColor" strokeWidth="1.4"/>
-        <circle cx="14.5" cy="5.5" r="1" fill="currentColor"/>
+        <rect x="2" y="2" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="10" cy="10" r="3.5" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="14.5" cy="5.5" r="1" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
+    label: "X",
+    handle: "@vertex_logi",
+    href: "https://x.com/vertex_logi?s=21",
+    icon: (
+      <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M15.34 3h2.71l-5.92 6.77L19 17h-5.46l-3.81-4.98L5.34 17H2.63l6.33-7.24L2 3h5.59l3.45 4.51L15.34 3zm-.95 12.6h1.5L5.66 4.52H4.05l10.34 11.08z" />
       </svg>
     ),
   },
   {
     label: "LINE",
-    handle: "あとで入力",
-    href: "https://line.me/",
+    handle: "公式LINE",
+    href: "https://lin.ee/oiG5UJQ",
     icon: (
       <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none">
-        <path d="M10 2C6 2 2.5 5 2.5 8.6c0 3.7 3.3 6.7 8 7.1V18l3-3a9.4 9.4 0 001.3-.4C17.3 13.5 19.5 11.2 19.5 8.6 19.5 5 16 2 10 2z" stroke="currentColor" strokeWidth="1.4"/>
-        <path d="M6.5 9h7M6.5 11.5h4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-      </svg>
-    ),
-  },
-  {
-    label: "Email",
-    handle: "あとで入力",
-    href: "mailto:あとで入力",
-    icon: (
-      <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none">
-        <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" strokeWidth="1.4"/>
-        <path d="M2 7l8 5 8-5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+        <path d="M10 2C6 2 2.5 5 2.5 8.6c0 3.7 3.3 6.7 8 7.1V18l3-3a9.4 9.4 0 001.3-.4C17.3 13.5 19.5 11.2 19.5 8.6 19.5 5 16 2 10 2z" stroke="currentColor" strokeWidth="1.4" />
+        <path d="M6.5 9h7M6.5 11.5h4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
       </svg>
     ),
   },
@@ -125,7 +124,7 @@ export default function ContactSection() {
         </div>
 
         {/* ── Dual track cards ── */}
-        <div ref={cardRef} className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto mb-14">
+        <div ref={cardRef} className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto mb-6">
 
           {/* Card 1 — Corporate */}
           <motion.div
@@ -145,9 +144,9 @@ export default function ContactSection() {
             {/* Icon */}
             <div className="w-12 h-12 rounded-sm border border-white/[0.08] bg-white/[0.03] flex items-center justify-center mb-6 text-white/30 group-hover:text-blue-400 group-hover:border-blue-500/30 transition-colors duration-400">
               <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
-                <path d="M4 20V8l8-4 8 4v12" stroke="currentColor" strokeWidth="1.4"/>
-                <rect x="9" y="12" width="6" height="8" rx="0.5" stroke="currentColor" strokeWidth="1.4"/>
-                <path d="M9 12v8" stroke="currentColor" strokeWidth="1" opacity="0.4"/>
+                <path d="M4 20V8l8-4 8 4v12" stroke="currentColor" strokeWidth="1.4" />
+                <rect x="9" y="12" width="6" height="8" rx="0.5" stroke="currentColor" strokeWidth="1.4" />
+                <path d="M9 12v8" stroke="currentColor" strokeWidth="1" opacity="0.4" />
               </svg>
             </div>
 
@@ -162,8 +161,8 @@ export default function ContactSection() {
               まずはお気軽にご相談ください。
             </p>
 
-            <GlowButton href="mailto:あとで入力" variant="primary" size="md">
-              配送を相談する
+            <GlowButton href="https://lin.ee/oiG5UJQ" variant="primary" size="md" external>
+              LINEで相談する
             </GlowButton>
           </motion.div>
 
@@ -185,8 +184,8 @@ export default function ContactSection() {
             {/* Icon */}
             <div className="w-12 h-12 rounded-sm border border-white/[0.08] bg-white/[0.03] flex items-center justify-center mb-6 text-white/30 group-hover:text-blue-400 group-hover:border-blue-500/30 transition-colors duration-400">
               <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.4"/>
-                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.4" />
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
               </svg>
             </div>
 
@@ -207,11 +206,57 @@ export default function ContactSection() {
           </motion.div>
         </div>
 
+        {/* ── LINE Banner ── */}
+        <motion.a
+          href="https://lin.ee/oiG5UJQ"
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, y: 24 }}
+          animate={cardInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.22, ease }}
+          whileHover={{
+            y: -4,
+            boxShadow: "0 0 0 1px rgba(0,200,80,0.35), 0 16px 48px rgba(0,180,60,0.12)",
+            transition: { duration: 0.22 },
+          }}
+          className="group relative flex items-center justify-between gap-6 max-w-4xl mx-auto mb-14 border border-white/[0.07] bg-white/[0.02] px-8 py-6 overflow-hidden hover:border-green-500/30 transition-colors duration-300"
+        >
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-green-400/0 to-transparent group-hover:via-green-400/40 transition-all duration-500" />
+          <div className="absolute bottom-0 left-0 w-0 group-hover:w-full h-px bg-gradient-to-r from-green-500/40 to-transparent transition-all duration-500" />
+
+          <div className="flex items-center gap-5">
+            {/* LINE icon large */}
+            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center text-white/35 group-hover:text-green-400 transition-colors duration-300">
+              <svg className="w-8 h-8" viewBox="0 0 20 20" fill="none">
+                <path d="M10 2C6 2 2.5 5 2.5 8.6c0 3.7 3.3 6.7 8 7.1V18l3-3a9.4 9.4 0 001.3-.4C17.3 13.5 19.5 11.2 19.5 8.6 19.5 5 16 2 10 2z" stroke="currentColor" strokeWidth="1.4" />
+                <path d="M6.5 9h7M6.5 11.5h4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-[family-name:var(--font-noto)] font-bold text-white text-base md:text-lg leading-snug">
+                LINEで気軽に相談する
+              </p>
+              <p className="text-white/30 text-xs font-[family-name:var(--font-noto)] mt-0.5">
+                まずはLINEからでもOK。お気軽にメッセージください。
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 text-white/30 group-hover:text-green-400 transition-colors duration-300 flex-shrink-0">
+            <span className="font-[family-name:var(--font-inter)] text-[10px] tracking-[0.25em] uppercase hidden sm:block">
+              Open LINE
+            </span>
+            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+        </motion.a>
+
         {/* ── Channel links ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={cardInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.3, ease }}
+          transition={{ duration: 0.6, delay: 0.34, ease }}
           className="flex flex-wrap items-center justify-center gap-2 max-w-xl mx-auto"
         >
           {channels.map((ch, i) => (
@@ -222,7 +267,7 @@ export default function ContactSection() {
               rel={ch.href.startsWith("http") ? "noopener noreferrer" : undefined}
               initial={{ opacity: 0 }}
               animate={cardInView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.5, delay: 0.38 + i * 0.08, ease }}
+              transition={{ duration: 0.5, delay: 0.42 + i * 0.08, ease }}
               whileHover={{
                 y: -3,
                 boxShadow: "0 0 0 1px rgba(0,102,255,0.3)",
@@ -241,7 +286,7 @@ export default function ContactSection() {
         <motion.p
           initial={{ opacity: 0 }}
           animate={cardInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.55 }}
+          transition={{ duration: 0.8, delay: 0.62 }}
           className="text-center mt-16 text-white/[0.12] text-[10px] font-[family-name:var(--font-inter)] tracking-[0.35em] uppercase"
         >
           合同会社VERTEX — Light Cargo / Corporate Logistics

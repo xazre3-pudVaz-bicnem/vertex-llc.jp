@@ -24,6 +24,39 @@ const links = {
   ],
 };
 
+const snsLinks = [
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/vertex.logi.official?igsh=MTJ5YmdnenY3cjZ1ZQ%3D%3D&utm_source=qr",
+    icon: (
+      <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none">
+        <rect x="2" y="2" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="10" cy="10" r="3.5" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="14.5" cy="5.5" r="1" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
+    label: "X",
+    href: "https://x.com/vertex_logi?s=21",
+    icon: (
+      <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M15.34 3h2.71l-5.92 6.77L19 17h-5.46l-3.81-4.98L5.34 17H2.63l6.33-7.24L2 3h5.59l3.45 4.51L15.34 3zm-.95 12.6h1.5L5.66 4.52H4.05l10.34 11.08z" />
+      </svg>
+    ),
+  },
+  {
+    label: "LINE",
+    href: "https://lin.ee/oiG5UJQ",
+    icon: (
+      <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none">
+        <path d="M10 2C6 2 2.5 5 2.5 8.6c0 3.7 3.3 6.7 8 7.1V18l3-3a9.4 9.4 0 001.3-.4C17.3 13.5 19.5 11.2 19.5 8.6 19.5 5 16 2 10 2z" stroke="currentColor" strokeWidth="1.4" />
+        <path d="M6.5 9h7M6.5 11.5h4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+];
+
 export default function Footer() {
   const ctaRef = useRef(null);
   const ctaInView = useInView(ctaRef, { once: true, margin: "-80px" });
@@ -153,6 +186,19 @@ export default function Footer() {
               お問い合わせ
               <span className="w-5 h-px bg-white/60 group-hover:w-8 transition-all duration-300" />
             </Link>
+            <a
+              href="https://lin.ee/oiG5UJQ"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 border border-white/12 hover:border-green-500/40 px-8 py-4 text-white/50 hover:text-white/90 transition-all duration-300 font-[family-name:var(--font-bebas)] text-xl tracking-[0.2em] group"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none">
+                <path d="M10 2C6 2 2.5 5 2.5 8.6c0 3.7 3.3 6.7 8 7.1V18l3-3a9.4 9.4 0 001.3-.4C17.3 13.5 19.5 11.2 19.5 8.6 19.5 5 16 2 10 2z" stroke="currentColor" strokeWidth="1.4" />
+                <path d="M6.5 9h7M6.5 11.5h4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+              </svg>
+              LINEで相談
+              <span className="w-5 h-px bg-current opacity-50 group-hover:w-8 group-hover:opacity-100 transition-all duration-300" />
+            </a>
             <Link
               href="/recruit"
               className="inline-flex items-center gap-5 border border-white/12 hover:border-white/30 px-10 py-4 text-white/50 hover:text-white/80 transition-all duration-300 font-[family-name:var(--font-bebas)] text-xl tracking-[0.2em] group"
@@ -180,11 +226,26 @@ export default function Footer() {
               軽貨物配送を中心に企業物流を支える、
               信頼のパートナー。
             </p>
-            <div className="flex items-center gap-3 mt-6">
+            <div className="flex items-center gap-3 mt-5">
               <span className="w-4 h-px bg-blue-500" />
               <span className="text-blue-400/60 text-[9px] tracking-[0.3em] font-[family-name:var(--font-inter)]">
                 DELIVERING TRUST
               </span>
+            </div>
+            {/* SNS Icons */}
+            <div className="flex items-center gap-3 mt-5">
+              {snsLinks.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="w-8 h-8 flex items-center justify-center border border-white/[0.08] text-white/25 hover:text-blue-400 hover:border-blue-500/30 transition-colors duration-200"
+                >
+                  {s.icon}
+                </a>
+              ))}
             </div>
           </div>
 
@@ -213,7 +274,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/[0.05] py-6 flex flex-col md:flex-row items-center justify-between gap-3">
           <p className="text-white/15 text-[10px] font-[family-name:var(--font-inter)] tracking-widest">
-            © 2024 合同会社VERTEX. All rights reserved.
+            © 2026 合同会社VERTEX. All rights reserved.
           </p>
           <div className="flex items-center gap-5">
             {[
