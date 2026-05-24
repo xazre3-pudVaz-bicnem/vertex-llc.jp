@@ -73,13 +73,14 @@ export default function CompanySection() {
               COMPANY
             </h2>
             {/* Logo */}
-            <div className="relative w-28 h-28 mb-2">
+            <div className="mb-2">
               <Image
                 src="/logo.jpg"
                 alt="合同会社VERTEX ロゴ"
-                fill
-                className="object-contain"
-                sizes="112px"
+                width={400}
+                height={400}
+                className="w-44 h-auto object-contain"
+                priority
               />
             </div>
           </FadeIn>

@@ -181,13 +181,13 @@ export default function AboutContent() {
                 ご不明な点はお気軽にお問い合わせください。
               </p>
               {/* Logo */}
-              <div className="relative w-24 h-24">
+              <div>
                 <Image
                   src="/logo.jpg"
                   alt="合同会社VERTEX ロゴ"
-                  fill
-                  className="object-contain"
-                  sizes="96px"
+                  width={400}
+                  height={400}
+                  className="w-40 h-auto object-contain"
                 />
               </div>
             </motion.div>
