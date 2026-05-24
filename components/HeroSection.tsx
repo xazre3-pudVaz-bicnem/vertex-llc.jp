@@ -307,9 +307,9 @@ export default function HeroSection() {
           transition={{ duration: 0.65, delay: 1.22, ease }}
           className="text-white/30 text-sm md:text-[0.9375rem] font-[family-name:var(--font-noto)] font-light max-w-[520px] leading-[2.1] mb-12"
         >
-          合同会社VERTEXは、軽貨物配送を中心に企業配送・スポット便・チャーター便まで
-          柔軟に対応する物流パートナーです。一件一件の配送に責任を持ち、
-          スピードと丁寧さを両立したサービスを提供します。
+          東京を拠点とする合同会社VERTEXは、ラストワンマイル配送・企業配送・
+          スポット配送・チャーター配送まで柔軟に対応する軽貨物物流パートナーです。
+          一件一件に責任を持ち、スピードと丁寧さを両立したサービスを提供します。
         </motion.p>
 
         {/* CTAs */}

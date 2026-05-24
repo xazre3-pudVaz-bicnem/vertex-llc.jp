@@ -30,16 +30,43 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://vertex-llc.jp"),
   title: {
     template: "%s | 合同会社VERTEX",
-    default: "合同会社VERTEX | 軽貨物配送・物流パートナー",
+    default: "東京の軽貨物ドライバー求人なら合同会社VERTEX｜業務委託配送ドライバー募集",
   },
   description:
-    "合同会社VERTEXは、軽貨物配送を中心に、企業配送・スポット便・チャーター便まで柔軟に対応する物流パートナーです。",
+    "東京・八王子を拠点とする合同会社VERTEXは、軽貨物ドライバーを随時募集中。未経験歓迎・業務委託契約・高収入可能。ラストワンマイル配送・企業配送・スポット配送に対応する物流パートナーです。",
+  keywords: [
+    "東京 軽貨物ドライバー 求人",
+    "軽貨物 求人",
+    "軽配送 求人",
+    "業務委託 ドライバー 東京",
+    "配送ドライバー 求人",
+    "軽貨物 未経験",
+    "軽貨物 高収入",
+    "八王子 軽貨物",
+    "合同会社VERTEX",
+  ],
   openGraph: {
     siteName: "合同会社VERTEX",
     locale: "ja_JP",
     type: "website",
+    title: "東京の軽貨物ドライバー求人なら合同会社VERTEX｜業務委託配送ドライバー募集",
+    description:
+      "東京・八王子を拠点に軽貨物ドライバー求人を募集中。未経験歓迎・業務委託・高収入可能。ラストワンマイル配送から企業配送まで対応。",
+    images: [{ url: "/logo.jpg", width: 1200, height: 630, alt: "合同会社VERTEX" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "東京の軽貨物ドライバー求人なら合同会社VERTEX",
+    description:
+      "未経験歓迎・業務委託・高収入可能。東京で軽貨物ドライバーとして活躍しませんか？",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
   },
 };
 
