@@ -22,23 +22,42 @@ const jobPostingSchema = {
   title: "軽貨物ドライバー（業務委託）",
   description:
     "東京都内での軽貨物配送ドライバーを募集しています。ラストワンマイル配送・企業配送・スポット配送など。未経験歓迎・業務委託契約・高収入可能。自由な働き方で活躍したい方歓迎。",
+  identifier: {
+    "@type": "PropertyValue",
+    name: "合同会社VERTEX",
+    value: "vertex-recruit-2026",
+  },
   hiringOrganization: {
     "@type": "Organization",
     name: "合同会社VERTEX",
     sameAs: "https://vertex-llc.jp",
+    url: "https://vertex-llc.jp",
+    logo: "https://vertex-llc.jp/logo.jpg",
   },
   jobLocation: {
     "@type": "Place",
     address: {
       "@type": "PostalAddress",
+      streetAddress: "川口町1395-8",
       addressLocality: "八王子市",
       addressRegion: "東京都",
+      postalCode: "192-0011",
       addressCountry: "JP",
     },
   },
   employmentType: "CONTRACTOR",
   datePosted: "2026-05-01",
   validThrough: "2027-12-31",
+  baseSalary: {
+    "@type": "MonetaryAmount",
+    currency: "JPY",
+    value: {
+      "@type": "QuantitativeValue",
+      minValue: 200000,
+      maxValue: 500000,
+      unitText: "MONTH",
+    },
+  },
   qualifications: "普通自動車免許（AT限定可）",
   responsibilities:
     "軽貨物配送、ラストワンマイル配送、企業配送、スポット配送、チャーター配送など",
@@ -48,6 +67,7 @@ const jobPostingSchema = {
     name: "Japan",
   },
   directApply: true,
+  url: "https://vertex-llc.jp/recruit",
 };
 
 const faqSchema = {

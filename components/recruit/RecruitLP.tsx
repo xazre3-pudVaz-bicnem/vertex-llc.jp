@@ -338,11 +338,74 @@ export default function RecruitLP() {
             ))}
           </div>
 
-          <FadeIn delay={0.3}>
-            <div className="flex flex-wrap gap-4">
-              <GlowButton href="/contact" variant="primary" size="lg">
-                応募する・相談する
-              </GlowButton>
+          {/* ── LINE + Instagram 応募導線 ── */}
+          <FadeIn delay={0.25}>
+            <div className="mt-4 max-w-4xl space-y-4">
+              {/* LINE CTA — primary */}
+              <a
+                href="https://lin.ee/oiG5UJQ"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between gap-4 w-full border border-green-500/30 bg-green-950/20 hover:bg-green-900/30 hover:border-green-400/50 transition-all duration-300 px-8 py-6 relative overflow-hidden"
+              >
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ background: "radial-gradient(ellipse 60% 100% at 0% 50%, rgba(34,197,94,0.06) 0%, transparent 70%)" }}
+                />
+                <div className="flex items-center gap-5 relative z-10">
+                  <div className="w-10 h-10 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center shrink-0 group-hover:border-green-400/60 transition-colors">
+                    <svg width="20" height="20" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-green-400">
+                      <path d="M20 4C11.16 4 4 10.26 4 18c0 4.48 2.36 8.48 6.06 11.14L8 36l6.38-3.34C15.52 32.88 17.72 33 20 33c8.84 0 16-6.26 16-14S28.84 4 20 4z" fill="currentColor"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-green-400 font-[family-name:var(--font-noto)] font-bold text-base leading-tight mb-0.5">
+                      LINEで応募・相談する
+                    </p>
+                    <p className="text-white/35 text-xs font-[family-name:var(--font-noto)]">
+                      一番かんたん・即レス対応 ／ まずはお気軽に
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 relative z-10 shrink-0">
+                  <span className="text-green-400/60 text-xs font-[family-name:var(--font-inter)] tracking-widest hidden sm:block">OPEN LINE</span>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-green-500/60 group-hover:text-green-400 group-hover:translate-x-1 transition-all duration-200">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              </a>
+
+              {/* Instagram CTA — secondary */}
+              <a
+                href="https://www.instagram.com/vertex.logi.official"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between gap-4 w-full border border-white/[0.07] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.14] transition-all duration-300 px-8 py-5 relative overflow-hidden"
+              >
+                <div className="flex items-center gap-5 relative z-10">
+                  <div className="w-10 h-10 rounded-full bg-white/[0.04] border border-white/[0.1] flex items-center justify-center shrink-0 group-hover:border-white/20 transition-colors">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white/50 group-hover:text-white/75 transition-colors">
+                      <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.5"/>
+                      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.5"/>
+                      <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-white/65 font-[family-name:var(--font-noto)] font-bold text-sm leading-tight mb-0.5 group-hover:text-white/85 transition-colors">
+                      Instagramで会社の雰囲気を見る
+                    </p>
+                    <p className="text-white/25 text-xs font-[family-name:var(--font-noto)]">
+                      @vertex.logi.official ／ 現場の様子・スタッフ紹介など
+                    </p>
+                  </div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-white/25 group-hover:text-white/45 group-hover:translate-x-1 transition-all duration-200 shrink-0">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </a>
+
+              <p className="text-white/18 text-xs font-[family-name:var(--font-noto)] pt-1 text-center">
+                まずはお気軽にご連絡ください。選考・面接は一切ありません。
+              </p>
             </div>
           </FadeIn>
         </div>
