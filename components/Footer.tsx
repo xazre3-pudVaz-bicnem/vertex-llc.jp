@@ -12,6 +12,11 @@ const links = {
     { label: "サービス",     href: "/service" },
     { label: "強み",         href: "/about#strength" },
   ],
+  対応エリア: [
+    { label: "エリア一覧",   href: "/area" },
+    { label: "八王子市",     href: "/area/hachioji" },
+    { label: "立川市",       href: "/area/tachikawa" },
+  ],
   採用: [
     { label: "採用情報",     href: "/recruit" },
     { label: "募集要項",     href: "/recruit#job-info" },
@@ -213,7 +218,7 @@ export default function Footer() {
       {/* ── Footer links ──────────────────────────────────────── */}
       <div className="relative z-10 max-w-[1440px] mx-auto px-8 md:px-16">
         {/* Main footer */}
-        <div className="py-16 md:py-20 grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12">
+        <div className="py-16 md:py-20 grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-10">
           {/* Brand */}
           <div>
             <Link
